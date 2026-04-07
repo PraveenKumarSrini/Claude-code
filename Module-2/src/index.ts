@@ -3,6 +3,7 @@ import { handleAdd } from "./commands/add";
 import { handleList } from "./commands/list";
 import { handleDone } from "./commands/done";
 import { handleDelete } from "./commands/delete";
+import { handleEdit } from "./commands/edit";
 
 const program = new Command();
 
@@ -15,7 +16,15 @@ program
   .command("add")
   .description("Add a new task")
   .argument("<title>", "Task title")
+  .option("--dueDate <date>", "Due date in YYYY-MM-DD format")
   .action(handleAdd);
+
+program
+  .command("edit")
+  .description("Edit a task's due date")
+  .argument("<id>", "Task ID")
+  .option("--dueDate <date>", "Due date in YYYY-MM-DD format")
+  .action(handleEdit);
 
 program
   .command("list")
