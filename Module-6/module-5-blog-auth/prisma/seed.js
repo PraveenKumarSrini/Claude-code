@@ -1,11 +1,21 @@
 const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Clean existing data
+  // Clean existing data (users must be deleted after posts due to FK)
   await prisma.comment.deleteMany();
   await prisma.post.deleteMany();
+  await prisma.user.deleteMany();
+
+  // Create seed user
+  const seedUser = await prisma.user.create({
+    data: {
+      email: "seed@example.com",
+      password: await bcrypt.hash("password123", 10),
+    },
+  });
 
   // Create sample posts
   const post1 = await prisma.post.create({
@@ -14,6 +24,7 @@ async function main() {
       content:
         "Express.js is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications. In this post, we will walk through the basics of setting up an Express server and creating your first routes.",
       published: true,
+      authorId: seedUser.id,
     },
   });
 
@@ -23,6 +34,7 @@ async function main() {
       content:
         "Prisma is a next-generation ORM that makes working with databases easy. It provides a type-safe query builder, automated migrations, and a powerful studio for exploring your data. Let us dive into how Prisma simplifies database access in Node.js applications.",
       published: true,
+      authorId: seedUser.id,
     },
   });
 
@@ -32,6 +44,7 @@ async function main() {
       content:
         "Designing a good REST API requires careful thought about resource naming, HTTP methods, status codes, and error handling. This guide covers the essential best practices every API developer should follow.",
       published: true,
+      authorId: seedUser.id,
     },
   });
 
@@ -41,6 +54,7 @@ async function main() {
       content:
         "This is a draft post about upcoming features. It should not appear in the public listing since it is not published yet.",
       published: false,
+      authorId: seedUser.id,
     },
   });
 
@@ -77,8 +91,9 @@ async function main() {
   });
 
   console.log("Seed data created:");
-  console.log(`  - ${4} posts (3 published, 1 draft)`);
-  console.log(`  - ${5} comments`);
+  console.log(`  - 1 user (seed@example.com)`);
+  console.log(`  - 4 posts (3 published, 1 draft)`);
+  console.log(`  - 5 comments`);
 }
 
 main()

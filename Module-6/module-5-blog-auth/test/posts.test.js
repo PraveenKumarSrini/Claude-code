@@ -5,10 +5,19 @@ import app from "../src/server.js";
 
 const prisma = new PrismaClient();
 
+let testUserId;
+
 beforeAll(async () => {
   // Ensure database is clean and seeded for tests
   await prisma.comment.deleteMany();
   await prisma.post.deleteMany();
+  await prisma.user.deleteMany();
+
+  // Create a test user — authorId is now required on Post
+  const testUser = await prisma.user.create({
+    data: { email: "testuser@example.com", password: "hashed-placeholder" },
+  });
+  testUserId = testUser.id;
 
   await prisma.post.create({
     data: {
@@ -16,6 +25,7 @@ beforeAll(async () => {
       title: "Test Post One",
       content: "Content for test post one.",
       published: true,
+      authorId: testUserId,
     },
   });
 
@@ -25,6 +35,7 @@ beforeAll(async () => {
       title: "Test Post Two (Draft)",
       content: "This draft should not appear in listings.",
       published: false,
+      authorId: testUserId,
     },
   });
 
@@ -40,6 +51,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await prisma.comment.deleteMany();
   await prisma.post.deleteMany();
+  await prisma.user.deleteMany();
   await prisma.$disconnect();
 });
 

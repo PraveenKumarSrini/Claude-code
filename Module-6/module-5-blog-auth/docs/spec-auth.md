@@ -199,7 +199,7 @@ Organized into 5 phases. Complete each phase fully and verify before moving to t
 
 **Goal:** Introduce the `User` model, link posts to users, and reset the database with updated seed data.
 
-- [ ] **2.1** Add `User` model to `prisma/schema.prisma`
+- [x] **2.1** Add `User` model to `prisma/schema.prisma`
   ```prisma
   model User {
     id        Int      @id @default(autoincrement())
@@ -209,12 +209,12 @@ Organized into 5 phases. Complete each phase fully and verify before moving to t
     posts     Post[]
   }
   ```
-- [ ] **2.2** Add `authorId Int` and `author User` relation to the `Post` model in `prisma/schema.prisma`
+- [x] **2.2** Add `authorId Int` and `author User` relation to the `Post` model in `prisma/schema.prisma`
   ```prisma
   authorId  Int
   author    User  @relation(fields: [authorId], references: [id])
   ```
-- [ ] **2.3** Update `prisma/seed.js` — three changes:
+- [x] **2.3** Update `prisma/seed.js` — three changes:
   - Add `await prisma.user.deleteMany()` at the top of the cleanup block (before posts/comments)
   - Add `const bcrypt = require('bcryptjs')` at the top of the file
   - Create a seed user before any posts:
@@ -227,12 +227,12 @@ Organized into 5 phases. Complete each phase fully and verify before moving to t
     });
     ```
   - Add `authorId: seedUser.id` to every `prisma.post.create()` call
-- [ ] **2.4** Run the database reset (drops DB, applies new schema, re-runs seed)
+- [x] **2.4** Run the database reset (drops DB, applies new schema, re-runs seed)
   ```bash
   npx prisma migrate reset
   ```
   Expected output: migration applied + seed output showing user and posts created.
-- [ ] **2.5** Verify the schema applied correctly
+- [x] **2.5** Verify the schema applied correctly
   ```bash
   npx prisma studio
   # Open the User table — seed@example.com should appear
