@@ -247,24 +247,24 @@ Organized into 5 phases. Complete each phase fully and verify before moving to t
 
 **Goal:** Build registration, login, and the `requireAuth` middleware. No route protection yet — that comes in Phase 4.
 
-- [ ] **3.1** Add requires and constants at the top of `src/server.js`
+- [x] **3.1** Add requires and constants at the top of `src/server.js`
   ```javascript
   const jwt = require('jsonwebtoken');
   const bcrypt = require('bcryptjs');
   const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
   ```
-- [ ] **3.2** Add `requireAuth` middleware function (after `app.use(express.json())`)
+- [x] **3.2** Add `requireAuth` middleware function (after `app.use(express.json())`)
   - Read `Authorization` header; reject with `401` if missing or not `Bearer ...`
   - Call `jwt.verify(token, JWT_SECRET)`; reject with `401` on any error
   - On success, set `req.user = decoded` and call `next()`
-- [ ] **3.3** Add `POST /api/auth/register` endpoint
+- [x] **3.3** Add `POST /api/auth/register` endpoint
   - Validate `email` and `password` present → `400` if missing
   - Check for existing user → `409` if duplicate email
   - Hash password: `await bcrypt.hash(password, 10)`
   - Create user in DB
   - Sign token: `jwt.sign({ id, email }, JWT_SECRET, { expiresIn: '24h' })`
   - Return `201 { token, user: { id, email } }` — **never include `password`**
-- [ ] **3.4** Add `POST /api/auth/login` endpoint
+- [x] **3.4** Add `POST /api/auth/login` endpoint
   - Validate `email` and `password` present → `400` if missing
   - Fetch user by email; if not found → `401 { error: "Invalid credentials" }`
   - `await bcrypt.compare(password, user.password)`; if false → same `401`
