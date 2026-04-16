@@ -339,7 +339,7 @@ curl -s http://localhost:3456/api/posts | jq .
 
 **Goal:** Update existing tests for auth and add full coverage for new behaviour.
 
-- [ ] **5.1** Update `beforeAll` in `test/posts.test.js`
+- [x] **5.1** Update `beforeAll` in `test/posts.test.js`
   - Add `await prisma.user.deleteMany()` to the cleanup block
   - Register a test user via the API and capture `authToken` and `testUserId`:
     ```javascript
@@ -349,33 +349,33 @@ curl -s http://localhost:3456/api/posts | jq .
     testUserId = authRes.body.user.id;
     ```
   - Add `authorId: testUserId` to both `prisma.post.create()` calls (ids 100 and 101)
-- [ ] **5.2** Update `afterAll` — add `await prisma.user.deleteMany()`
-- [ ] **5.3** Fix existing `POST /api/posts` test — add auth header:
+- [x] **5.2** Update `afterAll` — add `await prisma.user.deleteMany()`
+- [x] **5.3** Fix existing `POST /api/posts` test — add auth header:
   ```javascript
   await request(app).post('/api/posts')
     .set('Authorization', `Bearer ${authToken}`)
     .send({ ... })
   ```
-- [ ] **5.4** Add `describe('POST /api/auth/register')` tests
+- [x] **5.4** Add `describe('POST /api/auth/register')` tests
   - Returns `201` with `token` and `user.email`
   - Returns `409` on duplicate email
   - Returns `400` when `email` or `password` is missing
-- [ ] **5.5** Add `describe('POST /api/auth/login')` tests
+- [x] **5.5** Add `describe('POST /api/auth/login')` tests
   - Returns `200` with token on correct credentials
   - Returns `401` on wrong password
   - Returns `401` on unknown email
-- [ ] **5.6** Add `describe('Auth — 401 on missing token')` tests
+- [x] **5.6** Add `describe('Auth — 401 on missing token')` tests
   - `POST /api/posts` → `401`
   - `PUT /api/posts/100` → `401`
   - `DELETE /api/posts/100` → `401`
   - `POST /api/posts/100/comments` → `401`
-- [ ] **5.7** Add `describe('Auth — 403 ownership enforcement')` tests
+- [x] **5.7** Add `describe('Auth — 403 ownership enforcement')` tests
   - Register a second user (`bob@example.com`) in the describe block; capture token
   - `PUT /api/posts/100` with Bob's token → `403`
   - `DELETE /api/posts/100` with Bob's token → `403`
   - `PUT /api/posts/100` with Alice's (correct owner) token → `200`
   - `DELETE /api/posts/100` with Alice's token → `200`
-- [ ] **5.8** Run full test suite and confirm zero failures
+- [x] **5.8** Run full test suite and confirm zero failures
   ```bash
   npm test
   ```
