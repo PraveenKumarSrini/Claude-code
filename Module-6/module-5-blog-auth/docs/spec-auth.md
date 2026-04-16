@@ -180,12 +180,12 @@ Organized into 5 phases. Complete each phase fully and verify before moving to t
 
 **Goal:** Add new dependencies and confirm the project still starts cleanly.
 
-- [ ] **1.1** Install auth packages
+- [x] **1.1** Install auth packages
   ```bash
   npm install jsonwebtoken bcryptjs
   ```
-- [ ] **1.2** Confirm packages appear in `package.json` under `dependencies`
-- [ ] **1.3** Start the server and confirm it still starts without errors
+- [x] **1.2** Confirm packages appear in `package.json` under `dependencies`
+- [x] **1.3** Start the server and confirm it still starts without errors
   ```bash
   npm start
   # Expected: "Blog API running on http://localhost:3456"
