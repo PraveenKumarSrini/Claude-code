@@ -119,7 +119,7 @@ app.get("/api/posts/:id", async (req, res) => {
 });
 
 // Create a new post
-app.post("/api/posts", async (req, res) => {
+app.post("/api/posts", requireAuth, async (req, res) => {
   try {
     const { title, content, published } = req.body;
 
@@ -132,6 +132,7 @@ app.post("/api/posts", async (req, res) => {
         title,
         content,
         published: published ?? false,
+        authorId: req.user.id,
       },
     });
 
@@ -142,7 +143,7 @@ app.post("/api/posts", async (req, res) => {
 });
 
 // Update a post
-app.put("/api/posts/:id", async (req, res) => {
+app.put("/api/posts/:id", requireAuth, async (req, res) => {
   try {
     const { title, content, published } = req.body;
 
@@ -152,6 +153,10 @@ app.put("/api/posts/:id", async (req, res) => {
 
     if (!existing) {
       return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (existing.authorId !== req.user.id) {
+      return res.status(403).json({ error: "Not authorized to edit this post" });
     }
 
     const post = await prisma.post.update({
@@ -170,7 +175,7 @@ app.put("/api/posts/:id", async (req, res) => {
 });
 
 // Delete a post
-app.delete("/api/posts/:id", async (req, res) => {
+app.delete("/api/posts/:id", requireAuth, async (req, res) => {
   try {
     const existing = await prisma.post.findUnique({
       where: { id: parseInt(req.params.id) },
@@ -178,6 +183,10 @@ app.delete("/api/posts/:id", async (req, res) => {
 
     if (!existing) {
       return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (existing.authorId !== req.user.id) {
+      return res.status(403).json({ error: "Not authorized to delete this post" });
     }
 
     await prisma.post.delete({
@@ -191,7 +200,7 @@ app.delete("/api/posts/:id", async (req, res) => {
 });
 
 // Add a comment to a post
-app.post("/api/posts/:id/comments", async (req, res) => {
+app.post("/api/posts/:id/comments", requireAuth, async (req, res) => {
   try {
     const { content, authorName } = req.body;
 

@@ -291,11 +291,11 @@ curl -s -X POST http://localhost:3456/api/auth/login \
 
 **Goal:** Lock down write routes and enforce that users can only modify their own posts.
 
-- [ ] **4.1** Protect `POST /api/posts`
+- [x] **4.1** Protect `POST /api/posts`
   - Add `requireAuth` as second argument to the route
   - Replace hardcoded post creation with `authorId: req.user.id` in the `data` object
   - Remove any `authorId` from `req.body` — always use the token value
-- [ ] **4.2** Protect `PUT /api/posts/:id`
+- [x] **4.2** Protect `PUT /api/posts/:id`
   - Add `requireAuth` as second argument
   - After fetching `existing`, add ownership check:
     ```javascript
@@ -304,10 +304,10 @@ curl -s -X POST http://localhost:3456/api/auth/login \
     }
     ```
   - The update logic below the check is unchanged
-- [ ] **4.3** Protect `DELETE /api/posts/:id`
+- [x] **4.3** Protect `DELETE /api/posts/:id`
   - Add `requireAuth` as second argument
   - Same ownership check pattern as PUT, with message `'Not authorized to delete this post'`
-- [ ] **4.4** Protect `POST /api/posts/:id/comments`
+- [x] **4.4** Protect `POST /api/posts/:id/comments`
   - Add `requireAuth` as second argument
   - No ownership check needed — any authenticated user can comment
   - `authorName` body field remains required and unchanged
