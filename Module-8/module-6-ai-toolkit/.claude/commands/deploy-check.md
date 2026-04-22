@@ -22,13 +22,15 @@ npm run type-check
 
 Zero errors required. TypeScript errors in production indicate runtime crashes waiting to happen.
 
-## 3. Tests [BLOCKING]
+## 3. Tests with coverage [BLOCKING]
 
 ```bash
-npm test
+npm test -- --coverage
 ```
 
-All tests must pass. Note which tests exist and which areas have no coverage:
+All tests must pass. Requires `@vitest/coverage-v8` in `devDependencies` — if this package is missing, the command will fail with `MISSING DEPENDENCY` before running any tests. Verify it is present in `package.json` and `package-lock.json` is committed.
+
+Current coverage baseline (areas with no test coverage):
 
 - `test/tasks.test.ts` covers task CRUD and the 401 unauthenticated case
 - Users routes, error handler behaviour, and logger output are not yet covered
