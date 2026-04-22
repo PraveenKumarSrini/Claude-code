@@ -1,16 +1,17 @@
 import express from "express";
 import taskRoutes from "./routes/tasks";
 import userRoutes from "./routes/users";
+import { authMiddleware } from "./middleware/auth";
 
 const app = express();
-const PORT = 3458;
+const PORT = Number(process.env.PORT) || 3458;
 
 // Middleware
 app.use(express.json());
 
-// Routes
-app.use("/api/tasks", taskRoutes);
-app.use("/api/users", userRoutes);
+// Routes — all /api routes require a valid Bearer token
+app.use("/api/tasks", authMiddleware, taskRoutes);
+app.use("/api/users", authMiddleware, userRoutes);
 
 // Health check
 app.get("/health", (_req, res) => {

@@ -1,8 +1,16 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import request from "supertest";
+import jwt from "jsonwebtoken";
 import app from "../src/index";
 import { resetTasks } from "../src/routes/tasks";
 import { resetUsers } from "../src/routes/users";
+
+const TEST_SECRET = "test-secret";
+process.env.JWT_SECRET = TEST_SECRET;
+
+function authToken(): string {
+  return `Bearer ${jwt.sign({ id: "user-001", role: "admin" }, TEST_SECRET)}`;
+}
 
 describe("Task API", () => {
   beforeEach(() => {
@@ -11,11 +19,18 @@ describe("Task API", () => {
   });
 
   it("GET /api/tasks should return all tasks", async () => {
-    const res = await request(app).get("/api/tasks");
+    const res = await request(app)
+      .get("/api/tasks")
+      .set("Authorization", authToken());
 
     expect(res.status).toBe(200);
     expect(res.body.tasks).toBeDefined();
     expect(res.body.total).toBe(3);
+  });
+
+  it("GET /api/tasks should return 401 without a token", async () => {
+    const res = await request(app).get("/api/tasks");
+    expect(res.status).toBe(401);
   });
 
   it("POST /api/tasks should create a new task", async () => {
@@ -26,7 +41,10 @@ describe("Task API", () => {
       tags: ["test"],
     };
 
-    const res = await request(app).post("/api/tasks").send(newTask);
+    const res = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", authToken())
+      .send(newTask);
 
     expect(res.status).toBe(201);
     expect(res.body.task.title).toBe("New test task");
@@ -35,27 +53,34 @@ describe("Task API", () => {
   });
 
   it("GET /api/tasks/:id should return a specific task", async () => {
-    const res = await request(app).get("/api/tasks/task-001");
+    const res = await request(app)
+      .get("/api/tasks/task-001")
+      .set("Authorization", authToken());
 
     expect(res.status).toBe(200);
     expect(res.body.task.title).toBe("Set up project structure");
   });
 
   it("GET /api/tasks/:id should return 404 for missing task", async () => {
-    const res = await request(app).get("/api/tasks/nonexistent");
+    const res = await request(app)
+      .get("/api/tasks/nonexistent")
+      .set("Authorization", authToken());
 
     expect(res.status).toBe(404);
     expect(res.body.error).toBe("Task not found");
   });
 
   it("DELETE /api/tasks/:id should remove a task", async () => {
-    const res = await request(app).delete("/api/tasks/task-001");
+    const res = await request(app)
+      .delete("/api/tasks/task-001")
+      .set("Authorization", authToken());
 
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Task deleted");
 
-    // Verify it's gone
-    const checkRes = await request(app).get("/api/tasks/task-001");
+    const checkRes = await request(app)
+      .get("/api/tasks/task-001")
+      .set("Authorization", authToken());
     expect(checkRes.status).toBe(404);
   });
 });

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { Task } from "../types";
 import { generateId, slugify, formatDate } from "../utils/helpers";
+import { getUsers } from "./users";
 
 const router = Router();
 
@@ -9,7 +10,8 @@ let tasks: Task[] = [
   {
     id: "task-001",
     title: "Set up project structure",
-    description: "Initialize the Express + TypeScript project with proper config",
+    description:
+      "Initialize the Express + TypeScript project with proper config",
     status: "done",
     priority: "high",
     assigneeId: "user-001",
@@ -70,10 +72,8 @@ router.get("/", (req: Request, res: Response) => {
     // In a real app this would be an N+1 database query
     let assigneeName = "Unassigned";
     if (task.assigneeId) {
-      // Simulating N+1: importing and scanning users array per task
-      const users = require("./users").getUsers();
-      const assignee = users.find(
-        (u: { id: string }) => u.id === task.assigneeId
+      const assignee = getUsers().find(
+        (u: { id: string }) => u.id === task.assigneeId,
       );
       if (assignee) {
         assigneeName = assignee.name;
