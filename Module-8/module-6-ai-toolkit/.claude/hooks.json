@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": { "tool": ["Write", "Edit"] },
+        "command": "npx prettier --write $FILE"
+      }
+    ]
+  }
+}
